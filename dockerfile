@@ -1,0 +1,27 @@
+# Stage 1: Build the React app
+FROM node:latest as builder
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build
+
+# Debug: Print build directory contents
+RUN ls -la /app/build
+
+# Stage 2: Serve the React app with Nginx
+FROM nginx:latest
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Copy custom Nginx configuration file
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+# az acr login --name byticalw
+#docker login byticalw.azurecr.io -u 00000000-0000-0000-0000-000000000000 -p eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlhLWUw6S1pSWDpRNU5UOlFKTk86RFRCVzpSM1dXOjNKWVM6NE9EWTpFVFJYOlk3VDI6WkY1WToyQUZNIn0.eyJqdGkiOiJiOGQwZDJmMi1lMzRhLTQ1Y2UtYTRlNS03YWYwMzI2NDYzNmIiLCJzdWIiOiJwaXl1c2hAYnl0aWNhbC5haSIsIm5iZiI6MTcyMjk3MzM0MCwiZXhwIjoxNzIyOTg1MDQwLCJpYXQiOjE3MjI5NzMzNDAsImlzcyI6IkF6dXJlIENvbnRhaW5lciBSZWdpc3RyeSIsImF1ZCI6ImJ5dGljYWx3LmF6dXJlY3IuaW8iLCJ2ZXJzaW9uIjoiMS4wIiwicmlkIjoiZTJhOWJjNmQ0OWRkNDQwMGExODIzYzU1Yjc3YjQwNzIiLCJncmFudF90eXBlIjoicmVmcmVzaF90b2tlbiIsImFwcGlkIjoiYWViYzY0NDMtOTk2ZC00NWMyLTkwZjAtMzg4ZmY5NmZhYTU2IiwidGVuYW50IjoiOTczYzMzNmUtYWQ1Ni00NWVkLWI2ZjItMDc3ZWRhYTQ3ZjI3IiwicGVybWlzc2lvbnMiOnsiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiLCJtZXRhZGF0YS9yZWFkIiwibWV0YWRhdGEvd3JpdGUiLCJkZWxldGVkL3JlYWQiLCJkZWxldGVkL3Jlc3RvcmUvYWN0aW9uIl19LCJyb2xlcyI6W119.IV_TZ034j-FppLro-qzT78RM80VD3cAJAGRCnqezmz3hwjjL3_Xoq5vVKcIIUVXUTlG0xwxXDKbDRD2z5WL9rtmU9q274CQpWrlPgVZNyxNQXk9StlYywLcZeC5Av4PhNygjlBrpF9HENBsm3P5Ckj9UMynQyagVyGguBUCKszJImVz0_aR7ZuVOSRfvWDORrX2SNdFifT22ybSqmlKXga4BpiGmXPgbfYlp6f_rxQQwYabp02HqpRZTY1S5f_GUHmXzZjryKLUxHaGf_FhvLfPVpLsQnsqATt-fnrRQzITA3XU6asJobVckkA5qA--7g3Yfs5E6KI6_2SUoXTf80w
+
+#docker build --platform=linux/amd64 -t byticalw.azurecr.io/byticalimg:byticaltag
